@@ -1,0 +1,22 @@
+/* make the document links more interesting */
+A:link    {  font-family: Arial, Helvetica, sans-serif; font-size: 12pt; text-decoration: none; color: #000080}
+A:visited {  font-family: Arial, Helvetica, sans-serif; font-size: 12pt; text-decoration: none; color: #000080}
+A:hover   {  font-family: Arial, Helvetica, sans-serif; font-size: 12pt; text-decoration: underline; color: green}
+
+
+/* give the table some border and colour */
+table {
+	background-color: black;
+}
+
+th {
+	background-color: #cccccc;
+	text-align: center;
+	padding: 5px;
+}
+
+td {
+	background-color: white;
+	text-align: center;
+	padding: 5px;
+}
