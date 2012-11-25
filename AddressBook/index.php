@@ -69,6 +69,7 @@
 				echo "<th>Phone Number</th>";
 				echo "<th>email</th>";
 				echo "<th>Address</th>";
+				echo "<th></th>"; /* edit */
 				echo "</tr>\n"; /* "\n" = new line in raw text. */
 				
 				/* now we enter a while loop print out each record. until there are no more */
@@ -78,7 +79,8 @@
 					echo "<td>".$row->name."</td>";
 					echo "<td>".$row->phone_number."</td>";
 					echo "<td>".$row->email."</td>";
-					echo "<td>".$row->address."</td>";
+					echo "<td>".str_replace("\n", ",", $row->address)."</td>"; /* we replace all new line characters with a comma */
+					echo "<td><a href=\"edit-address.php?id=".$row->id."\">Edit</a></td>";
 					echo "</tr>\n";
 				} while ( $row = mysql_fetch_object($result));
 			}
