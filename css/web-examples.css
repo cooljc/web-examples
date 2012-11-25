@@ -41,3 +41,7 @@ td {
 	text-align: center;
 	padding: 5px;
 }
+
+td.left {
+	text-align: left;
+}

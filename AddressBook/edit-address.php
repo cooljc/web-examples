@@ -90,7 +90,7 @@
 	<title>Edit Address</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 0.21" />
-	<link rel="stylesheet" type="text/css" href="addressbook.css">
+	<link rel="stylesheet" type="text/css" href="../css/web-examples.css">
 </head>
 
 <body>

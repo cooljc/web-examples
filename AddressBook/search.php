@@ -1,7 +1,7 @@
 <!--
    search.php
    
-   Copyright 2012 Jon Cross <jon@beast.cooljc.co.uk>
+   Copyright 2012 Jon Cross <joncross.cooljc@gmail.com>
    
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 	<title>Search Results</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 0.21" />
-	<link rel="stylesheet" type="text/css" href="addressbook.css">
+	<link rel="stylesheet" type="text/css" href="../css/web-examples.css">
 </head>
 
 <body>
