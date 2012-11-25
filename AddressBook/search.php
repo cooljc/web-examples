@@ -1,7 +1,7 @@
 <!--
-   index.php
+   search.php
    
-   Copyright 2012 Jon Cross <joncross.cooljc@gmail.com>
+   Copyright 2012 Jon Cross <jon@beast.cooljc.co.uk>
    
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,40 +20,34 @@
    
    
 -->
-
+<?php
+	/* get search string from POST */
+	$search = '';
+	if (isset($_POST['search']) && ($_POST['search'] != '') ) {
+		$search = $_POST['search'];
+	}
+	else {
+		/* no search string passed.. redirect back to index.php */
+		header ("Location: index.php");
+	}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-	<title>Simple Address Book</title>
+	<title>Search Results</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 0.21" />
 	<link rel="stylesheet" type="text/css" href="addressbook.css">
 </head>
 
 <body>
-	<h1>Simple Address Book Using SQL+PHP</h1>
-	<!-- Add a link to a page that will allow creating new entries -->
-	<a href="create-new-entry-from.html">Add New Address</a>
-	
-	<p>This is a simple SQL driven address book using PHP to dynamically draw, add and update the content. It also will provide a simple search to demonstrate wild card searching.</p>
-
-	<h2>Search:</h2>
-	<form method="POST" action="search.php">
-		<table>
-			<tr>
-				<th>Enter Search String</th>
-				<td><input type="text" name="search"></td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="Search"></td>
-			</tr>
-		</table>
-	</form>
-	<h2>Addresses:</h2>
-	<!-- We will use php to draw a table based on the records in our database -->
-	<!-- The beauty of php is that it can be embedded inline with HTML -->
+	<h1>Search Results</h1>
+	<!-- Add a link to the home page -->
+	<a href="index.php">Home</a>
+	<p>This page is basically the same as the index page except the SQL uses wildcard searching to build the address list.</p>
+	<h2>Results for: <?php echo $search;?></h2>
 	<table>
 	<?php
 		/* we are not in php world. So if we use the "echo" function we can write data into
@@ -66,8 +60,14 @@
 		/* now we need to select the database we are going to perform our queries on */
 		mysql_select_db("examples", $link);
 		
-		/* the database has been selected so now its time to query the database */
-		$result = mysql_query("SELECT * FROM addresses", $link);
+		/* build SQL search string */
+		$sql = "SELECT * FROM addresses WHERE ";
+		$sql .= "name LIKE '%".$search."%' OR ";
+		$sql .= "phone_number LIKE '%".$search."%' OR ";
+		$sql .= "email LIKE '%".$search."%' OR ";
+		$sql .= "address LIKE '%".$search."%'";
+		
+		$result = mysql_query($sql, $link);
 		
 		/* check the $result variable. if set then the query was successful */
 		if ($result) {
