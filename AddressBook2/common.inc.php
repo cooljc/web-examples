@@ -82,7 +82,7 @@ function database_disconnect($link)
 
 /* ------------------------------------------------------------------ */
 /* database_getAddressBook()
- * This function will return an array of arrays.
+ * This function will return an array of arrays. */
 /* ------------------------------------------------------------------ */
 function database_getAddressBook()
 {
@@ -108,19 +108,87 @@ function database_getAddressBook()
 	}
 	
 	/* close connection */
-	database_disconnect();
+	database_disconnect($link);
 	
 	/* return array */
 	return $ret;
 }
 
 /* ------------------------------------------------------------------ */
+/* database_getRecordByID()
+ * This function looks up a record by ID */
 /* ------------------------------------------------------------------ */
-
+function database_getRecordByID($record_id)
+{
+	/* define ret value to false 
+	 * if we successfully find the record this will be set to the 
+	 * record array. */
+	$ret = false;
+	
+	/* connect to database */
+	$link = database_connect();
+	
+	/* build SQL */
+	$sql = "SELECT * FROM addresses WHERE id=".$record_id;
+	
+	/* execute query */
+	if ($result = mysql_query($sql, $link)) {
+		if ($row = mysql_fetch_array($result)) {
+			$ret = $row;
+		}
+		mysql_free_result($result);
+	}
+	
+	/* close connection */
+	database_disconnect($link);
+	
+	/* return array */
+	return $ret;
+}
 
 /* ------------------------------------------------------------------ */
+/* database_addUpdateRecord()
+ * This function is used to INSERT or UPDATE an address record. */
 /* ------------------------------------------------------------------ */
-
+function database_addUpdateRecord($data) 
+{
+	/* connect to database */
+	$link = database_connect();
+	
+	/* define variable for SQL string */
+	$sql = ""; 
+	
+	/* check if we are adding or updating.. */
+	if ($data['record_id'] == -1) {
+		/* insert mode */
+		/* build INSERT SQL statement */	
+		$sql = "INSERT INTO addresses (name, phone_number, email, address, date_created) ";
+		$sql .= "VALUES('".$data['name']."', '".$data['phone_number']."', '".$data['email']."', '".$data['address']."', UNIX_TIMESTAMP())";
+	}
+	else {
+		/* update mode */
+		/* build UPDATE SQL statement */	
+		$sql = "UPDATE addresses SET ";
+		$sql .= "name='".$data['name']."', ";
+		$sql .= "phone_number='".$data['phone_number']."', ";
+		$sql .= "email='".$data['email']."', ";
+		$sql .= "address='".$data['address']."' ";
+		$sql .= "WHERE id=".$data['record_id'];
+	}
+	
+	/* perform INSERT/UPDATE. For this we simply just use mysql_query() */
+	$result = mysql_query($sql, $link);
+	
+	/* we can check $result to find out if the insert was successful */
+	if ($result == FALSE) {
+		/* INSERT/UPDATE failed.. do something.. In this situation you could
+		 * direct to an error page or simply ignor it.. Really depends
+		 * on your application. */
+	}
+	
+	/* close connection */
+	database_disconnect($link);
+}
 
 /* ------------------------------------------------------------------ */
 /* ------------------------------------------------------------------ */

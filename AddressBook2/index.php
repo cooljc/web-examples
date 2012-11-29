@@ -38,7 +38,7 @@ require_once "common.inc.php";
 <body>
 	<h1>Simple Address Book Using SQL+PHP</h1>
 	<!-- Add a link to a page that will allow creating new entries -->
-	<a href="create-new-entry-from.html">Add New Address</a>
+	<a href="add-update-form.php">Add New Address</a>
 	
 	<p>This is a simple SQL driven address book using PHP to dynamically draw, add and update the content. It also will provide a simple search to demonstrate wild card searching.</p>
 
@@ -70,7 +70,7 @@ require_once "common.inc.php";
 				echo "<td>".$records[$loop]['phone_number']."</td>";
 				echo "<td>".$records[$loop]['email']."</td>";
 				echo "<td>".str_replace("\n", ",", $records[$loop]['address'])."</td>"; /* we replace all new line characters with a comma */
-				echo "<td><a href=\"edit-address.php?id=".$records[$loop]['id']."\">Edit</a></td>";
+				echo "<td><a href=\"add-update-form.php?id=".$records[$loop]['id']."\">Edit</a></td>";
 				echo "</tr>\n";
 			}
 		}
