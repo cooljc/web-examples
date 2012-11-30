@@ -1,19 +1,19 @@
 <?php
 /*
  * Filename: common.inc.php
- * 
+ *
  * Copyright 2012 Jon Cross <joncross.cooljc@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -25,7 +25,7 @@
  * well it can be used as an abstraction layer allowing you to replace
  * core parts without needing to rewrite the entire application.
  * For example if you changes your database backend from MySQL to Oracle
- * you should only need to edit this file. As long as your functions 
+ * you should only need to edit this file. As long as your functions
  * return the data that is required.
  * ================================================================== */
 
@@ -38,14 +38,14 @@ $DATABASE_PASS   = "p@ssw0rd";
 $DATABASE_DB     = "examples";
 
 /* ==================================================================
- * In this exmample we will make use of PHPs ability to declare 
- * functions. Functions a great for grouping functionality in one 
- * place. 
- * 
+ * In this exmample we will make use of PHPs ability to declare
+ * functions. Functions a great for grouping functionality in one
+ * place.
+ *
  * When naming functions its a good idea to stick to some sort
- * of convention. 
+ * of convention.
  * For example in this file I am prefixing the function
- * name with "database_" followed by the operation "connect" or 
+ * name with "database_" followed by the operation "connect" or
  * "disconnect" etc. When the operation contains more than one word
  * I will use camelCase where the first word is all lower case and the
  * first character of the following words is capital.
@@ -56,17 +56,17 @@ $DATABASE_DB     = "examples";
 /* database_connect()
  * This function creates a connection to our database backend. */
 /* ------------------------------------------------------------------ */
-function database_connect() 
+function database_connect()
 {
 	/* to use global variables in a function you need to declare them */
 	global $DATABASE_SERVER, $DATABASE_USER, $DATABASE_PASS, $DATABASE_DB;
-	
+
 	/* now we can use the mysql_connect() function passing in our variables */
 	$link = mysql_connect($DATABASE_SERVER, $DATABASE_USER, $DATABASE_PASS);
-	
+
 	/* select our database */
 	mysql_select_db($DATABASE_DB, $link);
-	
+
 	/* return $link to caller */
 	return $link;
 }
@@ -81,20 +81,17 @@ function database_disconnect($link)
 }
 
 /* ------------------------------------------------------------------ */
-/* database_getAddressBook()
- * This function will return an array of arrays. */
+/* database_getAddresses()
+ * This function will return an array of arrays based on an SQL query */
 /* ------------------------------------------------------------------ */
-function database_getAddressBook()
+function database_getAddresses($sql)
 {
 	/* define return array */
 	$ret = array();
-	
+
 	/* connect to database */
 	$link = database_connect();
-	
-	/* build SQL */
-	$sql = "SELECT * FROM addresses";
-	
+
 	/* execute query */
 	if ($result = mysql_query($sql, $link)) {
 		if ($row = mysql_fetch_array($result)) {
@@ -106,10 +103,10 @@ function database_getAddressBook()
 		}
 		mysql_free_result($result);
 	}
-	
+
 	/* close connection */
 	database_disconnect($link);
-	
+
 	/* return array */
 	return $ret;
 }
@@ -120,17 +117,17 @@ function database_getAddressBook()
 /* ------------------------------------------------------------------ */
 function database_getRecordByID($record_id)
 {
-	/* define ret value to false 
-	 * if we successfully find the record this will be set to the 
+	/* define ret value to false
+	 * if we successfully find the record this will be set to the
 	 * record array. */
 	$ret = false;
-	
+
 	/* connect to database */
 	$link = database_connect();
-	
+
 	/* build SQL */
 	$sql = "SELECT * FROM addresses WHERE id=".$record_id;
-	
+
 	/* execute query */
 	if ($result = mysql_query($sql, $link)) {
 		if ($row = mysql_fetch_array($result)) {
@@ -138,10 +135,10 @@ function database_getRecordByID($record_id)
 		}
 		mysql_free_result($result);
 	}
-	
+
 	/* close connection */
 	database_disconnect($link);
-	
+
 	/* return array */
 	return $ret;
 }
@@ -150,24 +147,24 @@ function database_getRecordByID($record_id)
 /* database_addUpdateRecord()
  * This function is used to INSERT or UPDATE an address record. */
 /* ------------------------------------------------------------------ */
-function database_addUpdateRecord($data) 
+function database_addUpdateRecord($data)
 {
 	/* connect to database */
 	$link = database_connect();
-	
+
 	/* define variable for SQL string */
-	$sql = ""; 
-	
+	$sql = "";
+
 	/* check if we are adding or updating.. */
 	if ($data['record_id'] == -1) {
 		/* insert mode */
-		/* build INSERT SQL statement */	
+		/* build INSERT SQL statement */
 		$sql = "INSERT INTO addresses (name, phone_number, email, address, date_created) ";
 		$sql .= "VALUES('".$data['name']."', '".$data['phone_number']."', '".$data['email']."', '".$data['address']."', UNIX_TIMESTAMP())";
 	}
 	else {
 		/* update mode */
-		/* build UPDATE SQL statement */	
+		/* build UPDATE SQL statement */
 		$sql = "UPDATE addresses SET ";
 		$sql .= "name='".$data['name']."', ";
 		$sql .= "phone_number='".$data['phone_number']."', ";
@@ -175,26 +172,49 @@ function database_addUpdateRecord($data)
 		$sql .= "address='".$data['address']."' ";
 		$sql .= "WHERE id=".$data['record_id'];
 	}
-	
+
 	/* perform INSERT/UPDATE. For this we simply just use mysql_query() */
 	$result = mysql_query($sql, $link);
-	
+
 	/* we can check $result to find out if the insert was successful */
 	if ($result == FALSE) {
 		/* INSERT/UPDATE failed.. do something.. In this situation you could
 		 * direct to an error page or simply ignor it.. Really depends
 		 * on your application. */
 	}
-	
+
 	/* close connection */
 	database_disconnect($link);
 }
 
 /* ------------------------------------------------------------------ */
+/* database_getAddressBook()
+ * This function selects all addresses from the address book. It will
+ * return an array of arrays. */
 /* ------------------------------------------------------------------ */
+function database_getAddressBook()
+{
+	/* build SQL */
+	$sql = "SELECT * FROM addresses";
 
+	return database_getAddresses ($sql);
+}
 
 /* ------------------------------------------------------------------ */
+/* database_getSearchResults($search_string)
+ * This function returns the results of a search string passed in. The
+ * return value will be an array of arrays. */
 /* ------------------------------------------------------------------ */
+function database_getSearchResults($search_string)
+{
+	/* build SQL search string */
+	$sql = "SELECT * FROM addresses WHERE ";
+	$sql .= "name LIKE '%".$search_string."%' OR ";
+	$sql .= "phone_number LIKE '%".$search_string."%' OR ";
+	$sql .= "email LIKE '%".$search_string."%' OR ";
+	$sql .= "address LIKE '%".$search_string."%'";
+
+	return database_getAddresses ($sql);
+}
 
 ?>
